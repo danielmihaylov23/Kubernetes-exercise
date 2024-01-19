@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-hello-world
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: django-hello-world
+  template:
+    metadata:
+      labels:
+        app: django-hello-world
+    spec:
+      containers:
+      - name: django-hello-world
+        image: registry.rev.ng/jackv/django-hello-world:master
+        env:
+          - name: DJANGO_DB
+            valueFrom:
+              configMapKeyRef:
+                name: django-config
+                key: DJANGO_DB
+          - name: DJANGO_SECRET_KEY
+            value: "M+vD8Y9mqQCpvqnp1jTySf7+5DKVAG+DK2zRDG4i31Q="
+          - name: DJANGO_ALLOWED_HOSTS
+            value: "hello-world.example.org"
+          - name: DJANGO_DB_USER
+            valueFrom:
+              configMapKeyRef:
+                name: django-config
+                key: DJANGO_DB_USER
+          - name: DJANGO_DB_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: django-config
+                key: DJANGO_DB_PASSWORD
